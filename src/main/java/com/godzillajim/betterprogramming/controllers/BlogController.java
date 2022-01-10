@@ -7,6 +7,7 @@ import com.godzillajim.betterprogramming.services.BlogService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ import java.util.Map;
 public class BlogController {
     private final BlogService blogService;
     @GetMapping("")
-    public List<Blog> getAllBlogs(){
+    public List<BlogBody> getAllBlogs(){
         return blogService.getAllBlogs();
     }
     @DeleteMapping("/{id}")
@@ -28,19 +29,16 @@ public class BlogController {
         return "Deletion unsuccessful";
     }
     @GetMapping("/{id}")
-    public Blog getBlogDetails(@PathVariable Long id){
+    public BlogBody getBlogDetails(@PathVariable Long id){
         return blogService.getBlogDetails(id);
     }
     @PostMapping("")
-    public Blog createBlog(@RequestBody BlogBody body){
+    public Blog createBlog(@RequestBody @Valid BlogBody body){
         return blogService.createBlog(body);
     }
-    //TODO: Update blog
     @PutMapping("/{id}")
-    public Blog updateBlog(@PathVariable Long id, @RequestBody Map<String, String> body){
-        String title = body.get("title");
-        String content = body.get("content");
-        return blogService.updateBlog(id, title, content);
+    public Blog updateBlog(@PathVariable Long id, @RequestBody @Valid BlogBody body){
+        return blogService.updateBlog(id, body);
     }
     @PostMapping("/search")
     public List<Blog> searchBlogs(@RequestBody Map<String, String> body){

@@ -1,7 +1,10 @@
 package com.godzillajim.betterprogramming.domain.entities.blog;
 
 import com.godzillajim.betterprogramming.domain.entities.BaseEntity;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import javax.persistence.CascadeType;
@@ -20,12 +23,10 @@ public class Blog extends BaseEntity {
     private String content;
     private String summary;
     private String prompt;
+    private boolean published;
     @OneToMany(cascade = CascadeType.DETACH, mappedBy = "blog")
     @ToString.Exclude
     private Set<Comment> comments;
-    @OneToMany(cascade = CascadeType.DETACH, mappedBy = "blog")
-    @ToString.Exclude
-    private Set<Tag> tags;
 
     @Override
     public boolean equals(Object o) {
