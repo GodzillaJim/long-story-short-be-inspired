@@ -15,9 +15,9 @@ import java.util.Set;
 @Data
 public class BlogBody {
     Long id;
-    @NotNull
+    @NotNull(message = "Blog title is required")
     String title;
-    @NotEmpty
+    @NotEmpty(message = "Content cannot be empty")
     String content;
     String summary;
     String prompt;

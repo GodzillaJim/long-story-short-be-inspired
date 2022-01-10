@@ -11,10 +11,10 @@ import javax.validation.constraints.NotNull;
 @Data
 public class CommentBody {
     Long id;
-    @NotNull
+    @NotNull(message = "firstName cannot be null")
     String firstName;
-    @NotNull
+    @NotNull(message = "lastName cannot be null")
     String lastName;
-    @NotNull
+    @NotNull(message = "content cannot be null")
     String content;
 }

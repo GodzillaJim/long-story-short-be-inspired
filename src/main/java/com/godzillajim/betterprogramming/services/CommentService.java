@@ -2,6 +2,7 @@ package com.godzillajim.betterprogramming.services;
 
 import com.godzillajim.betterprogramming.domain.entities.blog.Blog;
 import com.godzillajim.betterprogramming.domain.entities.blog.Comment;
+import com.godzillajim.betterprogramming.errors.ResourceNotFoundException;
 import com.godzillajim.betterprogramming.repositories.CommentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,18 +16,17 @@ public class CommentService {
     public List<Comment> getCommentsByBlog(Blog blog){
         return commentRepository.findCommentsByBlog(blog);
     }
-    public Comment addNewComment(Comment comment){
-      return commentRepository.save(comment);
+    public void addNewComment(Comment comment){
+         commentRepository.save(comment);
     }
     public boolean deleteComment(Long commentId){
         Comment comment = getCommentDetails(commentId);
-        if(comment != null){
-            commentRepository.delete(comment);
-            return true;
-        }
-        return false;
+        commentRepository.delete(comment);
+        return true;
     }
     public Comment getCommentDetails(Long commentId){
-        return commentRepository.getById(commentId);
+        return commentRepository
+                .findById(commentId)
+                .orElseThrow(()->new ResourceNotFoundException(String.format("Comment with this id: %s does not exist", commentId)));
     }
 }

@@ -7,6 +7,8 @@ import com.godzillajim.betterprogramming.domain.mappers.BlogBody;
 import com.godzillajim.betterprogramming.domain.mappers.BlogMappers;
 import com.godzillajim.betterprogramming.domain.mappers.CommentBody;
 import com.godzillajim.betterprogramming.domain.mappers.TagBody;
+import com.godzillajim.betterprogramming.errors.BadRequestException;
+import com.godzillajim.betterprogramming.errors.ResourceNotFoundException;
 import com.godzillajim.betterprogramming.repositories.BlogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,84 +33,83 @@ public class BlogService {
         });
         return bodies;
     }
-    public BlogBody getBlogDetails(Long id){
-        Blog blog = blogRepository.findBlogById(id).orElse(null);
-        if(blog != null){
-            BlogBody blogBody = new BlogBody();
-            List<Tag> tags = tagService.getTagByBlogs(blog);
-            List<Comment> comments = commentService.getCommentsByBlog(blog);
-            blogBody = BlogMappers.mapBlogToBlogBody(blog,tags,comments);
-            return blogBody;
-        }
-        return new BlogBody();
+    public BlogBody getBlogDetails(Long id) throws ResourceNotFoundException {
+        Blog blog = blogRepository
+                .findBlogById(id)
+                .orElseThrow(()-> new ResourceNotFoundException(String.format("The blog with id %s does not exist.", id.toString())));
+        BlogBody blogBody;
+        List<Tag> tags = tagService.getTagByBlogs(blog);
+        List<Comment> comments = commentService.getCommentsByBlog(blog);
+        blogBody = BlogMappers.mapBlogToBlogBody(blog,tags,comments);
+        return blogBody;
     }
     public Blog updateBlog(Long id, BlogBody blogBody){
-        Blog blog = blogRepository.findBlogById(id).orElse(null);
+        Blog blog = blogRepository
+                .findBlogById(id)
+                .orElseThrow(
+                        ()-> new ResourceNotFoundException(String.format("The blog with id %s does not exist.", id.toString())));
         String title = blogBody.getTitle();
         String content = blogBody.getContent();
         String summary = blogBody.getSummary();
         String prompt = blogBody.getPrompt();
-        if(blog != null){
-            blog.setTitle(title);
-            blog.setContent(content);
-            blog.setSummary(summary);
-            blog.setPrompt(prompt);
-            return blogRepository.save(blog);
-        }
-        return null;
+        blog.setTitle(title);
+        blog.setContent(content);
+        blog.setSummary(summary);
+        blog.setPrompt(prompt);
+        return blogRepository.save(blog);
     }
     public Blog createBlog(BlogBody body){
         Blog blog  = new Blog();
+        Blog testBlog = blogRepository.findBlogByTitle(body.getTitle()).orElse(null);
+        if(testBlog != null){
+            throw new BadRequestException(String.format("This title already exists: {%s}", body.getTitle()));
+        }
         blog.setTitle(body.getTitle());
         blog.setContent(blog.getContent());
         Blog createdBlog = blogRepository.save(blog);
-        body.getTags().forEach((t)-> {
-            tagService.AddTag(createdBlog, t);
-        });
+        body.getTags().forEach((t)-> tagService.AddTag(createdBlog, t));
         return createdBlog;
     }
     public Boolean deleteBlog(Long id){
-        Blog blog = blogRepository.findBlogById(id).orElse(null);
-        if(blog != null){
-            blogRepository.delete(blog);
-            return true;
-        }
-        return false;
+        Blog blog = blogRepository.findBlogById(id).orElseThrow(()-> new ResourceNotFoundException(String.format("The blog with id %s does not exist.", id.toString())));
+        blogRepository.delete(blog);
+        return true;
     }
     public List<Blog> searchBlogs(String searchTerm){
         return blogRepository.findByTitleContainingOrContentContaining(searchTerm, searchTerm);
     }
     @Transactional
     public boolean addComment(Long blogId, CommentBody comment){
-        Blog blog = blogRepository.findBlogById(blogId).orElse(null);
-        if(blog != null){
-            commentService.addNewComment(BlogMappers.mapCommentBodyToComment(comment, blog));
-            blogRepository.save(blog);
-            return true;
-        }
-        return false;
+        Blog blog = blogRepository
+                .findBlogById(blogId)
+                .orElseThrow(()->
+                new ResourceNotFoundException(
+                        String.format("The blog with id %s does not exist.", blogId.toString()
+                        )
+                )
+                );
+        commentService.addNewComment(BlogMappers.mapCommentBodyToComment(comment, blog));
+        blogRepository.save(blog);
+        return true;
     }
     public boolean removeComment(Long blogId, Long commentId){
-        Blog blog = blogRepository.findBlogById(blogId).orElse(null);
-        if(blog != null){
-            return commentService.deleteComment(commentId);
-        }
-        return false;
+        Blog blog = blogRepository.findBlogById(blogId).orElseThrow(()-> new ResourceNotFoundException(
+                String.format("The blog with id %s does not exist.", blogId.toString())
+        ));
+        return commentService.deleteComment(commentId);
     }
     public boolean addTag(Long blogId,TagBody tag){
-        Blog blog = blogRepository.findBlogById(blogId).orElse(null);
-        if(blog != null){
-            tagService.AddTag(blog, tag);
-            return true;
-        }
-        return false;
+        Blog blog = blogRepository.findBlogById(blogId).orElseThrow(()-> new ResourceNotFoundException(
+                String.format("The blog with id %s does not exist.", blogId.toString())
+        ));
+        tagService.AddTag(blog, tag);
+        return true;
     }
     public boolean removeTag(Long blogId, Long tagId){
-        Blog blog = blogRepository.findBlogById(blogId).orElse(null);
-        if(blog != null){
-           tagService.removeTag(tagId);
-            return true;
-        }
-        return false;
+        Blog blog = blogRepository.findBlogById(blogId).orElseThrow(()-> new ResourceNotFoundException(
+                String.format("The blog with id %s does not exist.", blogId.toString())
+        ));
+        tagService.removeTag(tagId);
+        return true;
     }
 }
