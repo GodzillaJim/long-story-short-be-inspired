@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 @RequiredArgsConstructor
 @Data
 public class CommentBody {
+    Long id;
     @NotNull
     String firstName;
     @NotNull

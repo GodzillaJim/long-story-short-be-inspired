@@ -3,6 +3,8 @@ package com.godzillajim.betterprogramming.domain.entities.blog;
 import com.godzillajim.betterprogramming.domain.entities.BaseEntity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -24,5 +26,6 @@ public class Comment extends BaseEntity {
     Date timestamp;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blog_id")
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     Blog blog;
 }

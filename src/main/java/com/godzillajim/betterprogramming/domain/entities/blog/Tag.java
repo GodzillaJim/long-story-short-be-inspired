@@ -20,6 +20,6 @@ public class Tag extends BaseEntity {
     String tagName;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blod_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     Blog blog;
 }

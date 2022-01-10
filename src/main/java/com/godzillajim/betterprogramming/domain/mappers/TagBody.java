@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @Data
 public class TagBody {
     String tag;
+    Long id = Long.getLong(String.valueOf(1));
 }

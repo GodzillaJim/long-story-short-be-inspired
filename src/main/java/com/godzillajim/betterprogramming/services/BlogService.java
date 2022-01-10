@@ -6,6 +6,7 @@ import com.godzillajim.betterprogramming.domain.entities.blog.Tag;
 import com.godzillajim.betterprogramming.domain.mappers.BlogBody;
 import com.godzillajim.betterprogramming.domain.mappers.BlogMappers;
 import com.godzillajim.betterprogramming.domain.mappers.CommentBody;
+import com.godzillajim.betterprogramming.domain.mappers.TagBody;
 import com.godzillajim.betterprogramming.repositories.BlogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,8 @@ public class BlogService {
         List<Blog> blogs = blogRepository.findAll();
         blogs.forEach((blog)-> {
             List<Tag> tags = tagService.getTagByBlogs(blog);
-            bodies.add(BlogMappers.mapBlogToBlogBody(blog,tags));
+            List<Comment> comments = commentService.getCommentsByBlog(blog);
+            bodies.add(BlogMappers.mapBlogToBlogBody(blog,tags, comments));
         });
         return bodies;
     }
@@ -34,7 +36,8 @@ public class BlogService {
         if(blog != null){
             BlogBody blogBody = new BlogBody();
             List<Tag> tags = tagService.getTagByBlogs(blog);
-            blogBody = BlogMappers.mapBlogToBlogBody(blog,tags);
+            List<Comment> comments = commentService.getCommentsByBlog(blog);
+            blogBody = BlogMappers.mapBlogToBlogBody(blog,tags,comments);
             return blogBody;
         }
         return new BlogBody();
@@ -78,9 +81,8 @@ public class BlogService {
     @Transactional
     public boolean addComment(Long blogId, CommentBody comment){
         Blog blog = blogRepository.findBlogById(blogId).orElse(null);
-        Comment comment1 = commentService.addNewComment(comment);
         if(blog != null){
-            blog.getComments().add(comment1);
+            commentService.addNewComment(BlogMappers.mapCommentBodyToComment(comment, blog));
             blogRepository.save(blog);
             return true;
         }
@@ -89,10 +91,23 @@ public class BlogService {
     public boolean removeComment(Long blogId, Long commentId){
         Blog blog = blogRepository.findBlogById(blogId).orElse(null);
         if(blog != null){
-            Comment comment = commentService.getCommentDetails(commentId);
-            blog.getComments().remove(comment);
-            blogRepository.save(blog);
             return commentService.deleteComment(commentId);
+        }
+        return false;
+    }
+    public boolean addTag(Long blogId,TagBody tag){
+        Blog blog = blogRepository.findBlogById(blogId).orElse(null);
+        if(blog != null){
+            tagService.AddTag(blog, tag);
+            return true;
+        }
+        return false;
+    }
+    public boolean removeTag(Long blogId, Long tagId){
+        Blog blog = blogRepository.findBlogById(blogId).orElse(null);
+        if(blog != null){
+           tagService.removeTag(tagId);
+            return true;
         }
         return false;
     }

@@ -7,11 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import java.util.Objects;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -24,9 +21,6 @@ public class Blog extends BaseEntity {
     private String summary;
     private String prompt;
     private boolean published;
-    @OneToMany(cascade = CascadeType.DETACH, mappedBy = "blog")
-    @ToString.Exclude
-    private Set<Comment> comments;
 
     @Override
     public boolean equals(Object o) {
