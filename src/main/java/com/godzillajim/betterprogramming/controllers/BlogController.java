@@ -62,4 +62,8 @@ public class BlogController {
     public boolean removeBlogTag(@PathVariable Long blogId, @PathVariable Long tagId){
         return blogService.removeTag(blogId, tagId);
     }
+    @PostMapping("/bulk")
+    public boolean addBBulkBlogs(@RequestBody @Valid List<BlogBody> blogs){
+        return blogService.bulkAddBlogs(blogs);
+    }
 }

@@ -43,6 +43,7 @@ public class CustomControllerAdvice {
                 response,status
         );
     }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleRemainingExceptions(Exception e){
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -65,3 +66,4 @@ public class CustomControllerAdvice {
         return stringWriter.toString();
     }
 }
+//TODO: Implement Search Blog feature

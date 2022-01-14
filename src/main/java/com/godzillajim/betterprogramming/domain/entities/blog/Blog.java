@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.util.Objects;
 
@@ -17,8 +18,11 @@ import java.util.Objects;
 @Entity
 public class Blog extends BaseEntity {
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String content;
+    @Column(columnDefinition = "TEXT")
     private String summary;
+    @Column(columnDefinition = "TEXT")
     private String prompt;
     private boolean published;
 

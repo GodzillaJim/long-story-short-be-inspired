@@ -59,13 +59,11 @@ public class BlogService {
         return blogRepository.save(blog);
     }
     public Blog createBlog(BlogBody body){
-        Blog blog  = new Blog();
         Blog testBlog = blogRepository.findBlogByTitle(body.getTitle()).orElse(null);
         if(testBlog != null){
             throw new BadRequestException(String.format("This title already exists: {%s}", body.getTitle()));
         }
-        blog.setTitle(body.getTitle());
-        blog.setContent(blog.getContent());
+        Blog blog = BlogMappers.mapBlogBodyToBlog(body);
         Blog createdBlog = blogRepository.save(blog);
         body.getTags().forEach((t)-> tagService.AddTag(createdBlog, t));
         return createdBlog;
@@ -112,4 +110,18 @@ public class BlogService {
         tagService.removeTag(tagId);
         return true;
     }
+    public boolean bulkAddBlogs(List<BlogBody> blogs){
+        blogs.forEach(blogBody -> {
+            //TODO: Create blog
+            Blog blog = createBlog(blogBody);
+            //TODO: Create comment
+            List<CommentBody> comments = blogBody.getComments();
+            comments.forEach(commentBody -> {
+                Comment newComment = BlogMappers.mapCommentBodyToComment(commentBody, blog);
+                commentService.addNewComment(newComment);
+            });
+        });
+        return true;
+    }
+
 }

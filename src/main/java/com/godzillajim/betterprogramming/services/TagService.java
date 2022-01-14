@@ -24,7 +24,6 @@ public class TagService {
             tagRepository.save(tag);
             return;
         }
-        throw new BadRequestException(String.format("Tag {%s} already exists",tagBody.getTag()));
     }
     public Tag getTagDetails(String tagName){
         return tagRepository.findTagByTagName(tagName).orElseThrow(()-> new ResourceNotFoundException(String.format("Tag {%s} does not exist", tagName)));

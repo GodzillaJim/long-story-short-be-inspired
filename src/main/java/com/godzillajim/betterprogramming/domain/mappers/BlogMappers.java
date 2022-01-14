@@ -10,6 +10,14 @@ import java.util.List;
 import java.util.Set;
 
 public class BlogMappers {
+    public static Blog mapBlogBodyToBlog(BlogBody body){
+        Blog blog = new Blog();
+        blog.setPrompt(body.getPrompt());
+        blog.setContent(body.getContent());
+        blog.setTitle(body.getTitle());
+        blog.setSummary(body.getSummary());
+        return blog;
+    }
     public static BlogBody mapBlogToBlogBody(Blog blog, List<Tag> tags, List<Comment> comments){
         BlogBody body = new BlogBody();
         body.setTitle(blog.getTitle());
