@@ -45,7 +45,7 @@ public class CategoryService {
         Category category = categoryRepository
                 .findCategoryById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Category with id %s does not exist", id)));
-        category.setName(category.getName());
+        category.setName(categoryBody.getName());
         return CategoryMapper.mapCategoryToCategoryBody(categoryRepository.save(category));
     }
     public Boolean deleteCategory(Long categoryId) {

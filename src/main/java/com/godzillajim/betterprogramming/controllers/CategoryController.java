@@ -4,7 +4,6 @@ import com.godzillajim.betterprogramming.domain.mappers.CategoryBody;
 import com.godzillajim.betterprogramming.domain.mappers.SearchRequest;
 import com.godzillajim.betterprogramming.domain.payloads.CategoryRequest;
 import com.godzillajim.betterprogramming.services.CategoryService;
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@Api(tags = "Category controller")
 @RestController
 @RequestMapping("/api/v1/public/category")
 @RequiredArgsConstructor

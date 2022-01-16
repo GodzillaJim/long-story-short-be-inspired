@@ -3,13 +3,11 @@ package com.godzillajim.betterprogramming.controllers;
 import com.godzillajim.betterprogramming.domain.entities.blog.Blog;
 import com.godzillajim.betterprogramming.domain.mappers.BlogBody;
 import com.godzillajim.betterprogramming.services.BlogService;
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Api(tags = "Blog protected routes")
 @RestController
 @RequestMapping("/api/v1/admin/blog")
 @RequiredArgsConstructor
