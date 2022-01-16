@@ -20,8 +20,9 @@ public class BlogMappers {
         blog.setCategory(category);
         return blog;
     }
-    public static BlogBody mapBlogToBlogBody(Blog blog, List<Tag> tags, List<Comment> comments){
+    public static BlogBody mapBlogToBlogBody(Blog blog, List<Comment> comments){
         BlogBody body = new BlogBody();
+        List<Tag> tags = blog.getTags();
         body.setTitle(blog.getTitle());
         body.setSummary(blog.getSummary());
         body.setPrompt(blog.getPrompt());

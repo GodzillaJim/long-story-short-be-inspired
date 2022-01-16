@@ -18,6 +18,8 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -30,9 +32,8 @@ public class BlogService {
         List<BlogBody> bodies = new ArrayList<>();
         List<Blog> blogs = blogRepository.findAll();
         blogs.forEach((blog)-> {
-            List<Tag> tags = tagService.getTagByBlogs(blog);
             List<Comment> comments = commentService.getCommentsByBlog(blog);
-            bodies.add(BlogMappers.mapBlogToBlogBody(blog,tags, comments));
+            bodies.add(BlogMappers.mapBlogToBlogBody(blog, comments));
         });
         return bodies;
     }
@@ -41,9 +42,8 @@ public class BlogService {
                 .findBlogById(id)
                 .orElseThrow(()-> new ResourceNotFoundException(String.format("The blog with id %s does not exist.", id.toString())));
         BlogBody blogBody;
-        List<Tag> tags = tagService.getTagByBlogs(blog);
         List<Comment> comments = commentService.getCommentsByBlog(blog);
-        blogBody = BlogMappers.mapBlogToBlogBody(blog,tags,comments);
+        blogBody = BlogMappers.mapBlogToBlogBody(blog,comments);
         return blogBody;
     }
     public Blog updateBlog(Long id, BlogBody blogBody){
@@ -67,10 +67,15 @@ public class BlogService {
             throw new BadRequestException(String.format("This title already exists: {%s}", body.getTitle()));
         }
         Category category = categoryService.getCategoryByName(body.getCategory());
+        List<Tag> tags = new ArrayList<>();
+        body.getTags().forEach(tagBody -> {
+            TagBody t = tagService.createTag(tagBody);
+            Tag tag=tagService.getTagById(t.getId());
+            tags.add(tag);
+        });
         Blog blog = BlogMappers.mapBlogBodyToBlog(body,category);
-        Blog createdBlog = blogRepository.save(blog);
-        body.getTags().forEach((t)-> tagService.AddTag(createdBlog, t));
-        return createdBlog;
+        blog.setTags(tags);
+        return blogRepository.save(blog);
     }
     public Boolean deleteBlog(Long id){
         Blog blog = blogRepository.findBlogById(id).orElseThrow(()-> new ResourceNotFoundException(String.format("The blog with id %s does not exist.", id.toString())));
@@ -104,14 +109,27 @@ public class BlogService {
         Blog blog = blogRepository.findBlogById(blogId).orElseThrow(()-> new ResourceNotFoundException(
                 String.format("The blog with id %s does not exist.", blogId.toString())
         ));
-        tagService.AddTag(blog, tag);
+        TagBody tagBody = tagService.createTag(tag);
+        Tag tag1 = tagService.getTagById(tagBody.getId());
+        List<Tag> tagList = blog.getTags()
+                .stream()
+                .filter(tag2 -> !Objects.equals(tag2.getTagName(), tag1.getTagName()))
+                .collect(Collectors.toList());
+        tagList.add(tag1);
+        blog.setTags(tagList);
+        blogRepository.save(blog);
         return true;
     }
     public boolean removeTag(Long blogId, Long tagId){
         Blog blog = blogRepository.findBlogById(blogId).orElseThrow(()-> new ResourceNotFoundException(
                 String.format("The blog with id %s does not exist.", blogId.toString())
         ));
-        tagService.removeTag(tagId);
+        List<Tag> tagList =blog
+                .getTags()
+                .stream().filter(tag -> tag.getId() != tagId)
+                .collect(Collectors.toList());
+        blog.setTags(tagList);
+        blogRepository.save(blog);
         return true;
     }
     public boolean bulkAddBlogs(List<BlogBody> blogs){
