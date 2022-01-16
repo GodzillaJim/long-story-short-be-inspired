@@ -26,4 +26,5 @@ public class BlogBody {
     Date lastModified;
     boolean published;
     List<CommentBody> comments;
+    private String category;
 }

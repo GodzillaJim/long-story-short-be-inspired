@@ -1,6 +1,7 @@
 package com.godzillajim.betterprogramming.domain.mappers;
 
 import com.godzillajim.betterprogramming.domain.entities.blog.Blog;
+import com.godzillajim.betterprogramming.domain.entities.blog.Category;
 import com.godzillajim.betterprogramming.domain.entities.blog.Comment;
 import com.godzillajim.betterprogramming.domain.entities.blog.Tag;
 
@@ -10,12 +11,13 @@ import java.util.List;
 import java.util.Set;
 
 public class BlogMappers {
-    public static Blog mapBlogBodyToBlog(BlogBody body){
+    public static Blog mapBlogBodyToBlog(BlogBody body, Category category){
         Blog blog = new Blog();
         blog.setPrompt(body.getPrompt());
         blog.setContent(body.getContent());
         blog.setTitle(body.getTitle());
         blog.setSummary(body.getSummary());
+        blog.setCategory(category);
         return blog;
     }
     public static BlogBody mapBlogToBlogBody(Blog blog, List<Tag> tags, List<Comment> comments){
@@ -38,6 +40,8 @@ public class BlogMappers {
             commentBodies.add(mapCommentToCommentBody(comment));
         });
         body.setComments(commentBodies);
+        Category category = blog.getCategory();
+        body.setCategory(category.getName());
         return body;
     }
     public static TagBody mapTagToTagBody(Tag tag){

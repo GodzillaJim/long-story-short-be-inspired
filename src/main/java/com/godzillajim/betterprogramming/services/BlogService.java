@@ -1,6 +1,7 @@
 package com.godzillajim.betterprogramming.services;
 
 import com.godzillajim.betterprogramming.domain.entities.blog.Blog;
+import com.godzillajim.betterprogramming.domain.entities.blog.Category;
 import com.godzillajim.betterprogramming.domain.entities.blog.Comment;
 import com.godzillajim.betterprogramming.domain.entities.blog.Tag;
 import com.godzillajim.betterprogramming.domain.mappers.BlogBody;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ import java.util.List;
 public class BlogService {
     private final BlogRepository blogRepository;
     private final CommentService commentService;
+    private final CategoryService categoryService;
     private final TagService tagService;
     public List<BlogBody> getAllBlogs(){
         List<BlogBody> bodies = new ArrayList<>();
@@ -63,7 +66,8 @@ public class BlogService {
         if(testBlog != null){
             throw new BadRequestException(String.format("This title already exists: {%s}", body.getTitle()));
         }
-        Blog blog = BlogMappers.mapBlogBodyToBlog(body);
+        Category category = categoryService.getCategoryByName(body.getCategory());
+        Blog blog = BlogMappers.mapBlogBodyToBlog(body,category);
         Blog createdBlog = blogRepository.save(blog);
         body.getTags().forEach((t)-> tagService.AddTag(createdBlog, t));
         return createdBlog;
@@ -112,9 +116,7 @@ public class BlogService {
     }
     public boolean bulkAddBlogs(List<BlogBody> blogs){
         blogs.forEach(blogBody -> {
-            //TODO: Create blog
             Blog blog = createBlog(blogBody);
-            //TODO: Create comment
             List<CommentBody> comments = blogBody.getComments();
             comments.forEach(commentBody -> {
                 Comment newComment = BlogMappers.mapCommentBodyToComment(commentBody, blog);
@@ -123,5 +125,34 @@ public class BlogService {
         });
         return true;
     }
-
+    public boolean publishBlog(Long id){
+        Blog blog = blogRepository.findBlogById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("This blog does not exist: (%s) ", id)));
+        blog.setPublished(true);
+        blogRepository.save(blog);
+        return true;
+    }
+   public Boolean unPublishBlog(Long id){
+       Blog blog = blogRepository.findBlogById(id)
+               .orElseThrow(() -> new ResourceNotFoundException(String.format("This blog does not exist: (%s) ", id)));
+       blog.setPublished(false);
+       blogRepository.save(blog);
+       return true;
+   }
+   public Boolean archiveBlog(Long id){
+       Blog blog = blogRepository.findBlogById(id)
+               .orElseThrow(() -> new ResourceNotFoundException(String.format("This blog does not exist: (%s) ", id)));
+       blog.setArchived(true);
+       blog.setArchivedOn(new Date());
+       blogRepository.save(blog);
+       return true;
+   }
+    public Boolean unArchiveBlog(Long id){
+        Blog blog = blogRepository.findBlogById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("This blog does not exist: (%s) ", id)));
+        blog.setArchived(false);
+        blog.setArchivedOn(new Date());
+        blogRepository.save(blog);
+        return true;
+    }
 }

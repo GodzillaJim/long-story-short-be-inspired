@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -19,7 +20,7 @@ public class CustomControllerAdvice {
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(Exception e){
         return getErrorResponseResponseEntity(e);
     }
-    @ExceptionHandler(BadRequestException.class)
+    @ExceptionHandler({BadRequestException.class, HttpClientErrorException.Unauthorized.class})
     public ResponseEntity<ErrorResponse> handleBadRequestException(Exception e){
         ErrorResponse response = new ErrorResponse();
         HttpStatus status = HttpStatus.BAD_REQUEST;
@@ -66,4 +67,3 @@ public class CustomControllerAdvice {
         return stringWriter.toString();
     }
 }
-//TODO: Implement Search Blog feature

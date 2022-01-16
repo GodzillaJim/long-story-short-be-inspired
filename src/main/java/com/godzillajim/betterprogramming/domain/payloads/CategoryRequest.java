@@ -1,2 +1,15 @@
-package com.godzillajim.betterprogramming.domain.payloads;public class CategoryRequest {
+package com.godzillajim.betterprogramming.domain.payloads;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class CategoryRequest {
+    @NotNull
+    private String name;
 }

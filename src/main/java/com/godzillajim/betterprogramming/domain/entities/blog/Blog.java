@@ -7,8 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
+import java.util.Date;
 import java.util.Objects;
 
 @Getter
@@ -25,7 +25,15 @@ public class Blog extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String prompt;
     private boolean published;
-
+    private Boolean archived = false ;
+    private Date archivedOn = new Date(new Date().getTime() + 36000000);
+    @ManyToOne
+    @JoinTable(
+            name = "blog_categories",
+            joinColumns = @JoinColumn(name = "blog_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id")
+    )
+    private Category category;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

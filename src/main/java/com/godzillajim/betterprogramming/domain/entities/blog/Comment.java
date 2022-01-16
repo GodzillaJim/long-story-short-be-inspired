@@ -27,5 +27,6 @@ public class Comment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blog_id")
     @OnDelete(action = OnDeleteAction.NO_ACTION)
+    @ToString.Exclude
     Blog blog;
 }
