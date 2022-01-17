@@ -13,7 +13,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/admin/tag")
+@RequestMapping("/api/v1/public/tag")
+//TODO: change public to admin
 @RequiredArgsConstructor
 public class TagController {
     final TagRepository tagRepository;

@@ -4,9 +4,11 @@ import com.godzillajim.betterprogramming.domain.entities.blog.Blog;
 import com.godzillajim.betterprogramming.domain.mappers.BlogBody;
 import com.godzillajim.betterprogramming.services.BlogService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/admin/blog")
@@ -52,5 +54,9 @@ public class BlogAdminController {
     @DeleteMapping("/{blogId}/comment/{commentId}")
     public Boolean removeComment(@PathVariable Long blogId, @PathVariable Long commentId){
         return blogService.removeComment(blogId, commentId);
+    }
+    @GetMapping("/archived")
+    public ResponseEntity<List<Blog>> getArchivedBlogs(){
+        return ResponseEntity.ok(blogService.getArchivedBlogs());
     }
 }

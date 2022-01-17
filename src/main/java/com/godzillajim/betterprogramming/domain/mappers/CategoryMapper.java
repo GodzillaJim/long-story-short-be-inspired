@@ -11,6 +11,7 @@ public class CategoryMapper {
     }
     public static CategoryBody mapCategoryToCategoryBody(Category category){
         CategoryBody categoryBody = new CategoryBody();
+        categoryBody.setName(category.getName());
         categoryBody.setArchived(category.getArchived());
         categoryBody.setCreatedOn(category.getCreatedDate());
         categoryBody.setId(category.getId());

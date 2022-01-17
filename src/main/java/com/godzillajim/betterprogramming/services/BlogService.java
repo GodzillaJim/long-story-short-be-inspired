@@ -15,10 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -28,6 +25,10 @@ public class BlogService {
     private final CommentService commentService;
     private final CategoryService categoryService;
     private final TagService tagService;
+
+    public List<Blog> getArchivedBlogs(){
+        return blogRepository.findBlogByArchivedTrue();
+    }
     public List<BlogBody> getAllBlogs(){
         List<BlogBody> bodies = new ArrayList<>();
         List<Blog> blogs = blogRepository.findAll();

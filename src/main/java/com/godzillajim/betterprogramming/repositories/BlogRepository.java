@@ -12,4 +12,5 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
     List<Blog> findByTitleContainingOrContentContaining(String title, String content);
     Optional<Blog> findBlogById(Long blogId);
     Optional<Blog> findBlogByTitle(String title);
+    List<Blog> findBlogByArchivedTrue();
 }
