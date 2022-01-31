@@ -1,5 +1,6 @@
 package com.godzillajim.betterprogramming.controllers;
 
+import com.godzillajim.betterprogramming.domain.entities.blog.Category;
 import com.godzillajim.betterprogramming.domain.mappers.CategoryBody;
 import com.godzillajim.betterprogramming.domain.mappers.SearchRequest;
 import com.godzillajim.betterprogramming.domain.payloads.CategoryRequest;
@@ -47,5 +48,9 @@ public class CategoryController {
     @GetMapping("/{id}/unarchive")
     public ResponseEntity<CategoryBody> unArchiveCategory(@PathVariable Long id){
         return ResponseEntity.ok(categoryService.unArchiveCategory(id));
+    }
+    @PostMapping("/bulk")
+    public ResponseEntity<List<Category>> bulkAdd(@RequestBody List<CategoryBody> categoryBodies){
+        return ResponseEntity.ok(categoryService.addBulk(categoryBodies));
     }
 }

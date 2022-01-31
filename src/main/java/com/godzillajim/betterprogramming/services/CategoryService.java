@@ -87,4 +87,10 @@ public class CategoryService {
             throw new RuntimeException(e.getMessage());
         }
     }
+
+    public List<Category> addBulk(List<CategoryBody> categoryBodies) {
+        List<Category> categories = new ArrayList<>();
+        categoryBodies.forEach(categoryBody -> categories.add(new Category(categoryBody.getName(), false)));
+        return categoryRepository.saveAll(categories);
+    }
 }
