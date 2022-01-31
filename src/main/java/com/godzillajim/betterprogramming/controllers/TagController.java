@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/public/tag")
-//TODO: change public to admin
 @RequiredArgsConstructor
 public class TagController {
     final TagRepository tagRepository;
@@ -27,18 +26,6 @@ public class TagController {
     @GetMapping("/{tagId}")
     public ResponseEntity<Tag> getTagDetails(@PathVariable Long tagId){
         return ResponseEntity.ok(tagService.getTagById(tagId));
-    }
-    @PostMapping("")
-    public ResponseEntity<TagBody> createTag(@RequestBody @Valid TagBody tagBody){
-        return ResponseEntity.ok(tagService.createTag(tagBody));
-    }
-    @PutMapping("/{tagId}")
-    public ResponseEntity<TagBody> updateTag(@PathVariable Long tagId, @RequestBody @Valid TagBody tagBody){
-        return ResponseEntity.ok(tagService.updateTag(tagId, tagBody));
-    }
-    @DeleteMapping("/{tagId}")
-    public ResponseEntity<TagBody> deleteTag(@PathVariable Long tagId){
-        return ResponseEntity.ok(tagService.deleteTag(tagId));
     }
     @PostMapping("/search")
     public ResponseEntity<List<TagBody>> searchTags(@RequestBody @Valid SearchRequest request){
