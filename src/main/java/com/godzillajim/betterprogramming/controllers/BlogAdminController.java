@@ -5,11 +5,13 @@ import com.godzillajim.betterprogramming.domain.mappers.BlogBody;
 import com.godzillajim.betterprogramming.services.BlogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 @RestController
 @RequestMapping("/api/v1/admin/blog")
 @RequiredArgsConstructor

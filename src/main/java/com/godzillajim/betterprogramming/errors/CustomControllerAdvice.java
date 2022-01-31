@@ -32,6 +32,18 @@ public class CustomControllerAdvice {
                 response,status
         );
     }
+    @ExceptionHandler({UnauthorizedRequestException.class, HttpClientErrorException.Forbidden.class})
+    public ResponseEntity<ErrorResponse> handleUnauthorizedRequestException(Exception e){
+        ErrorResponse response = new ErrorResponse();
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        response.setCode(status.value());
+        response.setMessage(e.getMessage());
+        response.setStatus(status.name());
+        response.setStackTrace(stringifyStacktrace(e));
+        return new ResponseEntity<>(
+                response,status
+        );
+    }
 
     private ResponseEntity<ErrorResponse> getErrorResponseResponseEntity(Exception e) {
         ErrorResponse response = new ErrorResponse();
@@ -44,6 +56,7 @@ public class CustomControllerAdvice {
                 response,status
         );
     }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleRemainingExceptions(Exception e){
