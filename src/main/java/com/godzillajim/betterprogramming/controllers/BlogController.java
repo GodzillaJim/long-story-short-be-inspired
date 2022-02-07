@@ -6,6 +6,7 @@ import com.godzillajim.betterprogramming.domain.mappers.CommentBody;
 import com.godzillajim.betterprogramming.domain.mappers.TagBody;
 import com.godzillajim.betterprogramming.services.BlogService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -41,5 +42,10 @@ public class BlogController {
     @PostMapping("/bulk")
     public boolean addBBulkBlogs(@RequestBody @Valid List<BlogBody> blogs){
         return blogService.bulkAddBlogs(blogs);
+    }
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<BlogBody>> getBlogsByCategory(
+            @PathVariable String category){
+        return ResponseEntity.ok(blogService.getBlogsByCategory(category));
     }
 }

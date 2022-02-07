@@ -31,15 +31,12 @@ public class BlogMappers {
         body.setCreatedOn(blog.getCreatedDate());
         body.setLastModified(blog.getLastModified());
         body.setPublished(blog.isPublished());
+        body.setArchived(blog.getArchived());
         Set<TagBody> tagSet = new HashSet<>();
-        tags.forEach((tag)->{
-            tagSet.add(mapTagToTagBody(tag));
-        } );
+        tags.forEach((tag)-> tagSet.add(mapTagToTagBody(tag)));
         body.setTags(tagSet);
         List<CommentBody> commentBodies = new ArrayList<>();
-        comments.forEach(comment -> {
-            commentBodies.add(mapCommentToCommentBody(comment));
-        });
+        comments.forEach(comment -> commentBodies.add(mapCommentToCommentBody(comment)));
         body.setComments(commentBodies);
         Category category = blog.getCategory();
         body.setCategory(category.getName());
@@ -67,6 +64,7 @@ public class BlogMappers {
         commentBody.setFirstName(comment.getFirstName());
         commentBody.setLastName(comment.getLastName());
         commentBody.setId(comment.getId());
+        commentBody.setCreatedOn(comment.getCreatedDate());
         return commentBody;
 
     }

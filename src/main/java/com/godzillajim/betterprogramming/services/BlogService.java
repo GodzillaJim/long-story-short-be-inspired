@@ -47,6 +47,7 @@ public class BlogService {
         blogBody = BlogMappers.mapBlogToBlogBody(blog,comments);
         return blogBody;
     }
+    @Transactional
     public Blog updateBlog(Long id, BlogBody blogBody){
         Blog blog = blogRepository
                 .findBlogById(id)
@@ -60,6 +61,13 @@ public class BlogService {
         blog.setContent(content);
         blog.setSummary(summary);
         blog.setPrompt(prompt);
+        List<Tag> tags = new ArrayList<>();
+        blogBody.getTags().forEach(tagBody -> {
+            TagBody newTag = tagService.createTag(tagBody);
+            Tag tag = tagService.getTagById(newTag.getId());
+            tags.add(tag);
+        });
+        blog.setTags(tags);
         return blogRepository.save(blog);
     }
     public Blog createBlog(BlogBody body){
@@ -101,7 +109,7 @@ public class BlogService {
         return true;
     }
     public boolean removeComment(Long blogId, Long commentId){
-        Blog blog = blogRepository.findBlogById(blogId).orElseThrow(()-> new ResourceNotFoundException(
+        blogRepository.findBlogById(blogId).orElseThrow(()-> new ResourceNotFoundException(
                 String.format("The blog with id %s does not exist.", blogId.toString())
         ));
         return commentService.deleteComment(commentId);
@@ -173,5 +181,16 @@ public class BlogService {
         blog.setArchivedOn(new Date());
         blogRepository.save(blog);
         return true;
+    }
+    public List<BlogBody> getBlogsByCategory (String category){
+        Category category1 = categoryService.getCategoryByName(category);
+        List<Blog> blogs = blogRepository.findBlogsByCategory(category1);
+        List<BlogBody> blogBodies = new ArrayList<>();
+        blogs.forEach(blog -> {
+            List<Comment> comments = commentService.getCommentsByBlog(blog);
+            BlogBody body = BlogMappers.mapBlogToBlogBody(blog, comments);
+            blogBodies.add(body);
+        });
+        return blogBodies;
     }
 }

@@ -1,5 +1,6 @@
 package com.godzillajim.betterprogramming.domain.entities.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.godzillajim.betterprogramming.domain.entities.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,7 @@ public class User extends BaseEntity {
     @Email
     @NotNull
     String email;
+    @JsonIgnore
     @NotNull
     String password;
     @NotNull

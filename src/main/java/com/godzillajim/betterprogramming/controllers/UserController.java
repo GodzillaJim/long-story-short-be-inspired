@@ -29,6 +29,11 @@ public class UserController {
     public ResponseEntity<List<User>> getAllUsers(){
         return ResponseEntity.ok(userService.getAllUsers());
     }
+    @GetMapping("/{userId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<User> getUserById(@PathVariable Long userId){
+        return ResponseEntity.ok(userService.getUserById(userId));
+    }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/{userId}/admin")
     public ResponseEntity<Boolean> makeUserAdmin(@PathVariable Long userId){

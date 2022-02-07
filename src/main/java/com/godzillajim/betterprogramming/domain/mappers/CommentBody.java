@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -17,4 +18,5 @@ public class CommentBody {
     String lastName;
     @NotNull(message = "content cannot be null")
     String content;
+    Date createdOn = new Date();
 }

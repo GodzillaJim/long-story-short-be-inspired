@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/admin/tag")
@@ -26,5 +27,9 @@ public class TagAdminController {
     @DeleteMapping("/{tagId}")
     public ResponseEntity<TagBody> deleteTag(@PathVariable Long tagId){
         return ResponseEntity.ok(tagService.deleteTag(tagId));
+    }
+    @PostMapping("/bulk")
+    public ResponseEntity<Boolean> addBulk(@RequestBody List<TagBody> tagBodyList){
+        return ResponseEntity.ok(tagService.addManyTags(tagBodyList));
     }
 }

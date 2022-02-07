@@ -63,4 +63,15 @@ public class TagService {
                 .findTagById(tagId)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Tag does not exist {%s}",tagId)));
     }
+    public Boolean addManyTags(List<TagBody> tagBodies){
+        List<Tag> tags = new ArrayList<>();
+        tagBodies.forEach(tagBody -> {
+            Tag tag = tagRepository.findTagByTagName(tagBody.getTag()).orElse(null);
+            if(tag == null){
+                tags.add(BlogMappers.mapTagBodyToTag(tagBody));
+            }
+        });
+        tagRepository.saveAll(tags);
+        return true;
+    }
 }

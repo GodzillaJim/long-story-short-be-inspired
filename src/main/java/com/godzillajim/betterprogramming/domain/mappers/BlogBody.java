@@ -27,4 +27,5 @@ public class BlogBody {
     boolean published;
     List<CommentBody> comments;
     private String category;
+    private Boolean archived = false;
 }
