@@ -2,6 +2,7 @@ package com.godzillajim.betterprogramming.controllers;
 
 import com.godzillajim.betterprogramming.domain.mappers.TagBody;
 import com.godzillajim.betterprogramming.services.TagService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-
+@Tag(name="Admin Tags Controller")
 @RestController
 @RequestMapping("/api/v1/admin/tag")
 @RequiredArgsConstructor

@@ -12,6 +12,7 @@ import com.godzillajim.betterprogramming.domain.repositories.IRoleRepository;
 import com.godzillajim.betterprogramming.domain.repositories.IUserRepository;
 import com.godzillajim.betterprogramming.helpers.AuthHelper;
 import com.godzillajim.betterprogramming.services.UserDetailsImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Tag(name="Authentication Controller")
 @CrossOrigin(origins = "*", maxAge = 36000)
 @RestController
 @RequestMapping("/api/v1/public/auth")

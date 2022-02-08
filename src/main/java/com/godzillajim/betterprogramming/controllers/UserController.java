@@ -1,18 +1,19 @@
 package com.godzillajim.betterprogramming.controllers;
 
 import com.godzillajim.betterprogramming.domain.entities.users.User;
+import com.godzillajim.betterprogramming.domain.mappers.PasswordRequest;
+import com.godzillajim.betterprogramming.domain.mappers.UserBody;
 import com.godzillajim.betterprogramming.services.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
 
+@Tag(name = "Admin User Controller")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/admin/users")
@@ -53,5 +54,24 @@ public class UserController {
     @GetMapping("/{userId}/deactivate")
     public ResponseEntity<Boolean> deActivateUser(@PathVariable Long userId){
         return ResponseEntity.ok(userService.deActivateUser(userId));
+    }
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/password")
+    public ResponseEntity<Boolean> changePassword(Principal principal, @RequestBody
+                                                  PasswordRequest passwordRequest){
+        return ResponseEntity.ok(userService.changePassword(principal.getName(), passwordRequest));
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/{userId}/password")
+    public ResponseEntity<String> adminChangePassword(
+            @PathVariable Long userId, @RequestBody PasswordRequest passwordRequest){
+        userService.adminChangePassword(userId, passwordRequest.getNewPassword());
+        return ResponseEntity.ok(passwordRequest.getNewPassword());
+    }
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{userId}/update")
+    public ResponseEntity<User> updateUserDetails(@PathVariable Long userId, @RequestBody
+                                                  UserBody userBody){
+        return ResponseEntity.ok(userService.updateUser(userId, userBody));
     }
 }

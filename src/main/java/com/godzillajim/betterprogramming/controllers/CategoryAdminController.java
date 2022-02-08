@@ -4,6 +4,7 @@ import com.godzillajim.betterprogramming.domain.entities.blog.Category;
 import com.godzillajim.betterprogramming.domain.mappers.CategoryBody;
 import com.godzillajim.betterprogramming.domain.payloads.CategoryRequest;
 import com.godzillajim.betterprogramming.services.CategoryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@Tag(name="Admin Category Controller")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 @RestController
 @RequestMapping("/api/v1/admin/category")

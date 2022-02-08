@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@io.swagger.v3.oas.annotations.tags.Tag(name = "Public Tags Controller")
 @RestController
 @RequestMapping("/api/v1/public/tag")
 @RequiredArgsConstructor

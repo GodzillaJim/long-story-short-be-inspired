@@ -5,6 +5,7 @@ import com.godzillajim.betterprogramming.domain.mappers.BlogBody;
 import com.godzillajim.betterprogramming.domain.mappers.CommentBody;
 import com.godzillajim.betterprogramming.domain.mappers.TagBody;
 import com.godzillajim.betterprogramming.services.BlogService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
+@Tag(name="Public Blogs Controller")
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1/public/blog")
