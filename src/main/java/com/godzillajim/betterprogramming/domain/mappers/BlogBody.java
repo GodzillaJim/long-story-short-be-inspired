@@ -28,4 +28,5 @@ public class BlogBody {
     List<CommentBody> comments;
     private String category;
     private Boolean archived = false;
+    private int views = 0;
 }

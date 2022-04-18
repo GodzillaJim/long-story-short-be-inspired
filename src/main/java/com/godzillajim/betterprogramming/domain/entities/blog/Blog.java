@@ -28,6 +28,7 @@ public class Blog extends BaseEntity {
     private boolean published;
     private Boolean archived = false ;
     private Date archivedOn = new Date(new Date().getTime() + 36000000);
+    @ToString.Exclude
     @ManyToOne
     @JoinTable(
             name = "blog_categories",
@@ -35,6 +36,7 @@ public class Blog extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id")
     )
     private Category category;
+    @ToString.Exclude
     @ManyToMany
     @JoinTable(
             name = "blog_tags",
@@ -42,6 +44,7 @@ public class Blog extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id")
     )
     private List<Tag> tags;
+    private int views = 0;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
