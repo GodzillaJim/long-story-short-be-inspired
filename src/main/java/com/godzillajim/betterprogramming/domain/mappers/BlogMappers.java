@@ -18,6 +18,10 @@ public class BlogMappers {
         blog.setTitle(body.getTitle());
         blog.setSummary(body.getSummary());
         blog.setCategory(category);
+        blog.setImg(body.getImg());
+        blog.setAuthor(body.getAuthor());
+        blog.setAuthor(body.getAuthor());
+        blog.setUpdatedBy(body.getUpdatedBy());
         return blog;
     }
     public static BlogBody mapBlogToBlogBody(Blog blog, List<Comment> comments){
@@ -32,6 +36,8 @@ public class BlogMappers {
         body.setLastModified(blog.getLastModified());
         body.setPublished(blog.isPublished());
         body.setArchived(blog.getArchived());
+        body.setImg(blog.getImg());
+        body.setAuthor(blog.getAuthor());
 
         Set<TagBody> tagSet = new HashSet<>();
         tags.forEach((tag)-> tagSet.add(mapTagToTagBody(tag)));

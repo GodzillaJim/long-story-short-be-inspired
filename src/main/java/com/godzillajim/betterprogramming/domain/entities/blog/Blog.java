@@ -1,6 +1,7 @@
 package com.godzillajim.betterprogramming.domain.entities.blog;
 
 import com.godzillajim.betterprogramming.domain.entities.BaseEntity;
+import com.godzillajim.betterprogramming.domain.entities.users.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -45,6 +46,21 @@ public class Blog extends BaseEntity {
     )
     private List<Tag> tags;
     private int views = 0;
+    private String img;
+
+    @ManyToOne
+    @JoinTable(
+            name = "blog_owners",
+            joinColumns = @JoinColumn(name = "blog_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
+    )
+    private User author;    @ManyToOne
+    @JoinTable(
+            name = "blog_updates",
+            joinColumns = @JoinColumn(name = "blog_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
+    )
+    private User updatedBy;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -57,4 +73,5 @@ public class Blog extends BaseEntity {
     public int hashCode() {
         return getClass().hashCode();
     }
+
 }

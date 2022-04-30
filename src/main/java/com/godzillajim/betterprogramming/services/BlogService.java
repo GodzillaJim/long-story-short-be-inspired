@@ -4,10 +4,12 @@ import com.godzillajim.betterprogramming.domain.entities.blog.Blog;
 import com.godzillajim.betterprogramming.domain.entities.blog.Category;
 import com.godzillajim.betterprogramming.domain.entities.blog.Comment;
 import com.godzillajim.betterprogramming.domain.entities.blog.Tag;
+import com.godzillajim.betterprogramming.domain.entities.users.User;
 import com.godzillajim.betterprogramming.domain.mappers.BlogBody;
 import com.godzillajim.betterprogramming.domain.mappers.BlogMappers;
 import com.godzillajim.betterprogramming.domain.mappers.CommentBody;
 import com.godzillajim.betterprogramming.domain.mappers.TagBody;
+import com.godzillajim.betterprogramming.domain.repositories.IUserRepository;
 import com.godzillajim.betterprogramming.errors.BadRequestException;
 import com.godzillajim.betterprogramming.errors.ResourceNotFoundException;
 import com.godzillajim.betterprogramming.repositories.BlogRepository;
@@ -25,6 +27,7 @@ public class BlogService {
     private final CommentService commentService;
     private final CategoryService categoryService;
     private final TagService tagService;
+    private final IUserRepository userRepository;
 
     public List<Blog> getArchivedBlogs(){
         return blogRepository.findBlogByArchivedTrue();
@@ -44,7 +47,13 @@ public class BlogService {
                 .orElseThrow(()-> new ResourceNotFoundException(String.format("The blog with id %s does not exist.", id.toString())));
         BlogBody blogBody;
         List<Comment> comments = commentService.getCommentsByBlog(blog);
+        List<Blog> relatedBlogs = blogRepository
+                .findTop5ByTitleContainsOrContentContainsOrCategory(blog.getTitle(),
+                blog.getTitle(), blog.getCategory());
         blogBody = BlogMappers.mapBlogToBlogBody(blog,comments);
+        List<Blog> filteredBlogs = relatedBlogs.stream().filter(relatedBlog -> blog.getId() != relatedBlog.getId()).collect(
+                Collectors.toList());
+        blogBody.setRelatedBlogs(filteredBlogs);
         return blogBody;
     }
     @Transactional
@@ -61,6 +70,9 @@ public class BlogService {
         blog.setContent(content);
         blog.setSummary(summary);
         blog.setPrompt(prompt);
+        blog.setImg(blogBody.getImg());
+        blog.setAuthor(blogBody.getAuthor());
+        blog.setUpdatedBy(blogBody.getUpdatedBy());
         List<Tag> tags = new ArrayList<>();
         blogBody.getTags().forEach(tagBody -> {
             TagBody newTag = tagService.createTag(tagBody);
@@ -129,7 +141,7 @@ public class BlogService {
         blogRepository.save(blog);
         return true;
     }
-    public boolean removeTag(Long blogId, Long tagId){
+    public boolean removeTag(Long blogId, Long tagId, User user){
         Blog blog = blogRepository.findBlogById(blogId).orElseThrow(()-> new ResourceNotFoundException(
                 String.format("The blog with id %s does not exist.", blogId.toString())
         ));
@@ -138,6 +150,7 @@ public class BlogService {
                 .stream().filter(tag -> tag.getId() != tagId)
                 .collect(Collectors.toList());
         blog.setTags(tagList);
+        blog.setUpdatedBy(user);
         blogRepository.save(blog);
         return true;
     }
@@ -152,32 +165,36 @@ public class BlogService {
         });
         return true;
     }
-    public boolean publishBlog(Long id){
+    public boolean publishBlog(Long id, User user){
         Blog blog = blogRepository.findBlogById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("This blog does not exist: (%s) ", id)));
         blog.setPublished(true);
+        blog.setUpdatedBy(user);
         blogRepository.save(blog);
         return true;
     }
-   public Boolean unPublishBlog(Long id){
+   public Boolean unPublishBlog(Long id, User user){
        Blog blog = blogRepository.findBlogById(id)
                .orElseThrow(() -> new ResourceNotFoundException(String.format("This blog does not exist: (%s) ", id)));
        blog.setPublished(false);
+       blog.setUpdatedBy(user);
        blogRepository.save(blog);
        return true;
    }
-   public Boolean archiveBlog(Long id){
+   public Boolean archiveBlog(Long id, User user){
        Blog blog = blogRepository.findBlogById(id)
                .orElseThrow(() -> new ResourceNotFoundException(String.format("This blog does not exist: (%s) ", id)));
        blog.setArchived(true);
        blog.setArchivedOn(new Date());
+       blog.setUpdatedBy(user);
        blogRepository.save(blog);
        return true;
    }
-    public Boolean unArchiveBlog(Long id){
+    public Boolean unArchiveBlog(Long id, User user){
         Blog blog = blogRepository.findBlogById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("This blog does not exist: (%s) ", id)));
         blog.setArchived(false);
+        blog.setUpdatedBy(user);
         blog.setArchivedOn(new Date());
         blogRepository.save(blog);
         return true;
@@ -193,4 +210,9 @@ public class BlogService {
         });
         return blogBodies;
     }
+    public User getUserById(Long id){
+        return userRepository.findUserById(id).orElseThrow(() ->new ResourceNotFoundException("Author does not exist"));
+    }
 }
+// TODO: Add relationship to Blog to tags, comments, to fetch with a single call
+// TODO: Employ mappers to convert POJO to Entities

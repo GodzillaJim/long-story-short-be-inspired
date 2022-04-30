@@ -17,4 +17,6 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
     List<Blog> findBlogsByCategory(Category category);
     List<Blog> findTop5ByOrderByCreatedDateDesc();
     List<Blog> findTop5ByOrderByViewsDesc();
+    List<Blog> findTop5ByTitleContainsOrContentContainsOrCategory(String query, String title, Category category);
+
 }

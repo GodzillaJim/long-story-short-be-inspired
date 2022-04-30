@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
@@ -27,9 +29,11 @@ public abstract class BaseEntity implements Serializable {
     @CreatedDate
     @CreationTimestamp
     private Date createdDate;
+    @CreatedBy
     private String createdBy;
     @LastModifiedDate
     @UpdateTimestamp
     private Date lastModified;
+    @LastModifiedBy
     private String lastModifiedBy;
 }
