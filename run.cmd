@@ -1,0 +1,1 @@
+.mvnw spring-brun -Pprod
