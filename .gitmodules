@@ -1,0 +1,3 @@
+[submodule "admin-ui"]
+	path = admin-ui
+	url = https://github.com/GodzillaJim/long-story-short-bt-inspired.git
