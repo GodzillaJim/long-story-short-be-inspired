@@ -12,6 +12,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>better-programming</name>
     <description>better-programming</description>
+    <packaging>war</packaging>
     <properties>
         <java.version>11</java.version>
         <frontend-maven-plugin.version>1.12.1</frontend-maven-plugin.version>
@@ -191,5 +192,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
