@@ -31,4 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
-/admin-ui/node/node_modules/npm/
+/admin-ui/node/
